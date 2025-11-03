@@ -1,3 +1,4 @@
+'''
 # MLHACKATHON
 
 Welcome to the MLHACKATHON repository! This project features implementations and explorations of various machine learning agents and models, with a central focus on a Hangman game agent that learns using a Hidden Markov Model (HMM).
@@ -82,3 +83,4 @@ This repository is open source and available under the MIT License. See the [LIC
 ---
 
 Happy hacking and learning with MLHACKATHON!
+'''
