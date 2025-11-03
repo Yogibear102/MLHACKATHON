@@ -1,0 +1,55 @@
+# HangmanHMM Project Analysis Report
+
+## Key Observations
+
+**Most Challenging Parts**
+- **State Representation**: Defining sufficiently descriptive states for RL to perform well, especially as the agent must guess letters with partial knowledge of the word.
+- **Sparse Rewards**: The environment provides sparse and sometimes deceptive rewards, since wrong guesses penalize without offering clear guidance.
+- **Exploration vs. Exploitation**: Ensuring the agent explores enough to learn the letter distributions, rather than prematurely exploiting suboptimal policies.
+- **HMM Integration**: Designing an HMM for Hangman is non-trivial since word selection is not Markovian and requires thoughtful abstraction for reasonable state transition probabilities.
+
+**Insights Gained**
+- Careful balance between state space size and tractability: too detailed a state makes learning slow; too coarse loses predictive power.
+- Uncertainty quantification is crucial: using letter frequency and transition probabilities (from HMM) helps guide more intelligent guesses.
+- RL effectiveness increases with shaped rewards and good feature engineering.
+
+---
+
+## Strategies
+
+**HMM Design Choices**
+- *States:* Modeled underlying word letter positions and their revealed/masked status.
+- *Transition Matrix:* Represented probable next letter appearances, implicitly using English corpus letter transition probability.
+- *Emission Matrix:* Probability of seeing a masked/revealed letter given the current state.
+- **Purpose:** Used HMM to propose likely letter candidates when RL policy is uncertain.
+
+**RL State Design**
+- *State:* Encoded as (currently revealed letters, set of letters guessed so far, number of guesses remaining).
+- *Reward:* +1 for correct guess, -1 for incorrect, higher bonus for complete word uncover.
+- **Why:** This design allows the agent to learn which letter revelations most contribute towards solving the word, and discourages unnecessary guessing.
+
+---
+
+## Exploration
+
+**Managing Trade-off**
+- Used **epsilon-greedy** policy: With probability ε, agent explores by randomly guessing a letter; otherwise exploits best known action.
+- **Dynamic epsilon decay**: Started with high exploration (ε=0.8), gradually decreased ε to 0.1 as confidence in the learned policy grew.
+- Integrated HMM: When RL policy's confidence is low, used HMM's most likely letter prediction to guide exploration, rather than purely random choice.
+
+---
+
+## Future Improvements
+
+*With another week:*
+1. **Deeper NLP Integration**: Use advanced models (e.g., transformers, masked language models) to suggest likely letter/word completions.
+2. **Curriculum Learning**: Train the agent progressively from easier (shorter) words to harder, increasing sample efficiency.
+3. **Reward Shaping**: Provide intermediate positive feedback not just for full word completion but also for critical partial reveals (e.g., vowels).
+4. **Transfer Learning**: Pretrain RL/HMM agent on larger word datasets (Scrabble dictionary, Wikipedia) for improved transition/emission probability estimates.
+5. **Contextual Bandit**: Frame decision as a bandit problem, using contextual information about word category/theme.
+6. **Human vs. Agent Testing**: Pit the agent against human players for robust evaluation and qualitative insights.
+7. **Visualization Tools**: Create dashboards to track agent's uncertainty, action selection, and learning progression.
+
+---
+
+*This report summarizes lessons and design choices for combining HMMs and RL to master Hangman, with practical recommendations for future enhancement.*
